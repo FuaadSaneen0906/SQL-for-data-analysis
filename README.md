@@ -1,78 +1,35 @@
 # SQL-for-data-analysis
 
-create database hr_analyst ;
-use hr_analyst;
-select count(*) from hr_1;
-select count(*) from hr_2;
-select * from hr_1;
-select * from hr_2;
+Database Setup
+Created and selected a database: hr_analyst.
 
-/* 
+Queried basic data from two tables: hr_1 and hr_2.
 
-> Average Attrition rate for all departments
+Key Performance Indicators (KPIs) Analyzed
+Average Attrition Rate for All Departments
 
-> Average Hourly rate of Male Research Scientist
+Calculated attrition rate (percentage of employees who left) for each department.
 
-> Attrition rate Vs Monthly income stats
+Average Hourly Rate of Male Research Scientists
 
-> Average working years for each Department
+Filtered data by gender and job role to compute the average hourly wage for male research scientists.
 
-> Job Role Vs Work life balance
+Attrition Rate vs. Monthly Income
 
-> Attrition rate Vs Year since last promotion relation
+Grouped employees into income bins (by ₹10,000 intervals).
 
-*/
+Calculated attrition rate for each income bracket.
 
-#KPI 1- Average Attrition rate for all departments
-select department,
-CONCAT(ROUND((SUM(CASE Attrition WHEN 'yes' THEN 1 ELSE 0 END) / COUNT(employeecount)) * 100, 2), '%') AS Average_Attrition_rate
-from hr_1
-group by department
-order by department;
+Average Working Years for Each Department
 
-#KPI 2- Average Hourly rate of Male Research Scientist
-select Gender,Jobrole, avg(HourlyRate) as Average_Hourly_rate 
-from hr_1
-where gender='male' and jobrole="research scientist";
+Joined the two tables and calculated the average tenure (YearsAtCompany) per department.
 
+Job Role vs. Work-Life Balance
 
-#KPI 3-Attrition rate Vs Monthly income stats
-select floor(monthlyincome/10000)*10000 as income_bin,
-CONCAT(ROUND((SUM(CASE Attrition WHEN 'yes' THEN 1 ELSE 0 END) / COUNT(employeecount)) * 100, 2), '%') AS Average_Attrition_rate
-from hr_1
-inner join hr_2
-on hr_1.EmployeeNumber = hr_2.`Employee ID`
-group by income_bin
-order by income_bin;
+Mapped numeric worklifebalance scores to qualitative labels (Excellent, Good, Average, Poor).
 
-#KPI 4- Average working years for each Department
-select hr_1.Department, avg(hr_2.YearsAtCompany) as Average_working_year
-from hr_1
-inner join hr_2
-on hr_1.EmployeeNumber= hr_2.`Employee ID`
-group by hr_1.Department;
+Displayed work-life balance levels by job role.
 
-#KPI 5- Job Role Vs Work life balance
-SELECT 
-    JobRole,
-    CASE
-        WHEN worklifebalance = 1 THEN 'Excellent'
-        WHEN worklifebalance = 2 THEN 'Good'
-        WHEN worklifebalance = 3 THEN 'Average'
-        WHEN worklifebalance = 4 THEN 'Poor'
-        ELSE 'null'
-    END AS work_life_balance
-FROM 
-    hr_1
-INNER JOIN 
-    hr_2 ON hr_1.EmployeeNumber = hr_2.`Employee ID`;
+Attrition Rate vs. Years Since Last Promotion
 
-
-#KPI 6- Attrition rate Vs Year since last promotion relation
-select distinct YearsSinceLastPromotion,
-CONCAT(ROUND((SUM(CASE Attrition WHEN 'yes' THEN 1 ELSE 0 END) / COUNT(employeecount)) * 100, 2), '%') AS Average_Attrition_rate
-from hr_1
-inner join hr_2
-on hr_1.EmployeeNumber= hr_2.`Employee ID`
-group by YearsSinceLastPromotion
-order by YearsSinceLastPromotion;
+Analyzed how attrition rates vary based on years since the last promotion.
